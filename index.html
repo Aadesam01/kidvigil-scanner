@@ -5,46 +5,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KidVigil Scan</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: auto; }
-    input, button { font-size: 1.2em; padding: 10px; width: 100%; margin: 10px 0; }
-    #result { margin-top: 20px; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      text-align: center;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      font-size: 1.2em;
+      margin: 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2em;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #219150;
+    }
+    #response {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
   </style>
 </head>
 <body>
-  <h2>KidVigil Scan</h2>
+  <h1>KidVigil Scan</h1>
 
-  <input type="text" id="childId" placeholder="Child ID" />
+  <input
+    type="text"
+    id="childIdInput"
+    placeholder="Enter Child ID here (e.g. KV-STD-0003)"
+  />
+
+  <br />
+
   <button onclick="sendScan()">Send Scan</button>
 
-  <div id="result"></div>
+  <div id="response"></div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const childIdInput = document.getElementById('childId');
-    const resultDiv = document.getElementById('result');
+    async function sendScan() {
+      const childId = document.getElementById("childIdInput").value.trim();
+      const responseDiv = document.getElementById("response");
 
-    if (params.get('childId')) {
-      childIdInput.value = params.get('childId');
-      sendScan();
-    }
+      responseDiv.textContent = "";
 
-    function sendScan() {
-      const childId = childIdInput.value.trim();
       if (!childId) {
-        alert("Enter Child ID");
+        alert("Please enter Child ID");
         return;
       }
 
-      resultDiv.innerText = "Processing...";
+      const backendUrl = "https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec"; // <-- Replace this with your deployed Apps Script URL
 
-      fetch("https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ childId })
-      })
-      .then(r => r.json())
-      .then(d => resultDiv.innerText = d.status)
-      .catch(e => resultDiv.innerText = "Network error");
+      try {
+        const response = await fetch(backendUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ childId }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+
+        responseDiv.textContent = "Scan Status: " + data.status;
+      } catch (error) {
+        responseDiv.textContent = "Error sending scan: " + error.message;
+      }
     }
   </script>
 </body>
