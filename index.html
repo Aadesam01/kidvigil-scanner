@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KidVigil Scan</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 400px; margin: auto; }
+    input, button { font-size: 1.2em; padding: 10px; width: 100%; margin: 10px 0; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>KidVigil Scan</h2>
+
+  <input type="text" id="childId" placeholder="Child ID" />
+  <button onclick="sendScan()">Send Scan</button>
+
+  <div id="result"></div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const childIdInput = document.getElementById('childId');
+    const resultDiv = document.getElementById('result');
+
+    if (params.get('childId')) {
+      childIdInput.value = params.get('childId');
+      sendScan();
+    }
+
+    function sendScan() {
+      const childId = childIdInput.value.trim();
+      if (!childId) {
+        alert("Enter Child ID");
+        return;
+      }
+
+      resultDiv.innerText = "Processing...";
+
+      fetch("https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ childId })
+      })
+      .then(r => r.json())
+      .then(d => resultDiv.innerText = d.status)
+      .catch(e => resultDiv.innerText = "Network error");
+    }
+  </script>
+</body>
+</html>
