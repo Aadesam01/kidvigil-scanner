@@ -13,12 +13,10 @@
       max-width: 420px;
       margin: auto;
     }
-
     h2 {
       text-align: center;
       color: #222;
     }
-
     input {
       width: 100%;
       padding: 12px;
@@ -27,7 +25,6 @@
       border: 1px solid #ccc;
       margin-top: 10px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -40,11 +37,9 @@
       font-weight: bold;
       cursor: pointer;
     }
-
     button:hover {
       background-color: #27ae60;
     }
-
     #result {
       margin-top: 20px;
       text-align: center;
@@ -61,7 +56,7 @@
   <input
     type="text"
     id="childId"
-    placeholder="Enter Child ID (e.g. KID123)"
+    placeholder="Enter Child ID (e.g. Kid:123)"
   />
 
   <button onclick="sendScan()">Send Scan</button>
@@ -69,8 +64,7 @@
   <div id="result"></div>
 
   <script>
-    const WEB_APP_URL =
-      "https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec";
 
     async function sendScan() {
       const childId = document.getElementById("childId").value.trim();
@@ -81,17 +75,28 @@
         return;
       }
 
-      resultDiv.innerText = "Processing...";
+      resultDiv.textContent = "Processing...";
 
-      const url = WEB_APP_URL + "?childId=" + encodeURIComponent(childId);
+      const url = `${WEB_APP_URL}?childId=${encodeURIComponent(childId)}`;
 
       try {
-        const response = await fetch(url, { method: "GET" });
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
         const data = await response.json();
-        resultDiv.innerText = JSON.stringify(data, null, 2);
+
+        if (data.status === "SUCCESS") {
+          resultDiv.textContent = `✅ Scan successful for Child ID: ${data.childId}`;
+        } else if (data.status === "INVALID_ID") {
+          resultDiv.textContent = `❌ Invalid Child ID: ${data.childId}`;
+        } else if (data.status === "NO_CHILD_ID") {
+          resultDiv.textContent = "⚠️ No Child ID provided.";
+        } else {
+          resultDiv.textContent = `⚠️ ${data.status}: ${data.message || ""}`;
+        }
       } catch (error) {
-        resultDiv.innerText = "❌ Network error";
-        console.error(error);
+        resultDiv.textContent = "❌ Network error. Please try again.";
+        console.error("Fetch error:", error);
       }
     }
   </script>
