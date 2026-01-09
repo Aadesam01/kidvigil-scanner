@@ -19,13 +19,29 @@
   <div id="result"></div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const childIdInput = document.getElementById('childId');
-    const resultDiv = document.getElementById('result');
+  async function sendScan() {
+    const childId = document.getElementById("childId").value.trim();
 
-    if (params.get('childId')) {
-      childIdInput.value = params.get('childId');
-      sendScan();
+    if (!childId) {
+      alert("Enter Child ID");
+      return;
+    }
+
+    const url =
+      "https://script.google.com/macros/s/AKfycbzt-B7x8LYyhqdyPRlHR5LT_mGc_0wN8GJA31EKvI_6ivuRp-azIhZtWAULEAcuGe4-Gw/exec" +
+      "?childId=" +
+      encodeURIComponent(childId);
+
+    try {
+      const response = await fetch(url);
+      const result = await response.json();
+      alert(JSON.stringify(result, null, 2));
+    } catch (err) {
+      alert("Network error");
+      console.error(err);
+    }
+  }
+</script>
     }
 
     async function sendScan() {
