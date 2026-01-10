@@ -1,105 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KidVigil Scan</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      padding: 20px;
-      max-width: 420px;
-      margin: auto;
-    }
-    h2 {
-      text-align: center;
-      color: #222;
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 1.1em;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1.1em;
-      margin-top: 15px;
-      border-radius: 6px;
-      border: none;
-      background-color: #2ecc71;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #27ae60;
-    }
-    #result {
-      margin-top: 20px;
-      text-align: center;
-      font-weight: bold;
-      white-space: pre-wrap;
-    }
-  </style>
-</head>
-
-<body>
-
-  <h2>KidVigil Scan</h2>
-
-  <input
-    type="text"
-    id="childId"
-    placeholder="Enter Child ID (e.g. Kid:123)"
-  />
-
-  <button onclick="sendScan()">Send Scan</button>
-
-  <div id="result"></div>
-
-  <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzWgOStcdIjs4PF4ByFaslbCjKQTIrwSvGxmelLDp47fcrev0EatYZ2jjxx0fOD5Z2o/exec";
-
-    async function sendScan() {
-      const childId = document.getElementById("childId").value.trim();
-      const resultDiv = document.getElementById("result");
-
-      if (!childId) {
-        alert("Please enter Child ID");
-        return;
-      }
-
-      resultDiv.textContent = "Processing...";
-
-      const url = `${WEB_APP_URL}?childId=${encodeURIComponent(childId)}`;
-
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        const data = await response.json();
-
-        if (data.status === "SUCCESS") {
-          resultDiv.textContent = `✅ Scan successful for Child ID: ${data.childId}`;
-        } else if (data.status === "INVALID_ID") {
-          resultDiv.textContent = `❌ Invalid Child ID: ${data.childId}`;
-        } else if (data.status === "NO_CHILD_ID") {
-          resultDiv.textContent = "⚠️ No Child ID provided.";
-        } else {
-          resultDiv.textContent = `⚠️ ${data.status}: ${data.message || ""}`;
-        }
-      } catch (error) {
-        resultDiv.textContent = "❌ Network error. Please try again.";
-        console.error("Fetch error:", error);
-      }
-    }
-  </script>
-
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <title>KidVigil Scan</title>  
+  
+  <style>  
+    body {  
+      font-family: Arial, sans-serif;  
+      background: #f4f6fb;  
+      padding: 20px;  
+      max-width: 420px;  
+      margin: auto;  
+    }  
+    h2 {  
+      text-align: center;  
+      color: #222;  
+    }  
+    input {  
+      width: 100%;  
+      padding: 12px;  
+      font-size: 1.1em;  
+      border-radius: 6px;  
+      border: 1px solid #ccc;  
+      margin-top: 10px;  
+    }  
+    button {  
+      width: 100%;  
+      padding: 12px;  
+      font-size: 1.1em;  
+      margin-top: 15px;  
+      border-radius: 6px;  
+      border: none;  
+      background-color: #2ecc71;  
+      color: white;  
+      font-weight: bold;  
+      cursor: pointer;  
+    }  
+    button:hover {  
+      background-color: #27ae60;  
+    }  
+    #result {  
+      margin-top: 20px;  
+      text-align: center;  
+      font-weight: bold;  
+      white-space: pre-wrap;  
+    }  
+  </style>  
+</head>  
+  
+<body>  
+  
+  <h2>KidVigil Scan</h2>  
+  
+  <input  
+    type="text"  
+    id="childId"  
+    placeholder="Enter Child ID (e.g. Kid:123)"  
+  />  
+  
+  <button onclick="sendScan()">Send Scan</button>  
+  
+  <div id="result"></div>  
+  
+  <script>  
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzWgOStcdIjs4PF4ByFaslbCjKQTIrwSvGxmelLDp47fcrev0EatYZ2jjxx0fOD5Z2o/exec";  
+  
+    async function sendScan() {  
+      const childId = document.getElementById("childId").value.trim();  
+      const resultDiv = document.getElementById("result");  
+  
+      if (!childId) {  
+        alert("Please enter Child ID");  
+        return;  
+      }  
+  
+      resultDiv.textContent = "Processing...";  
+  
+      const url = `${WEB_APP_URL}?childId=${encodeURIComponent(childId)}`;  
+  
+      try {  
+        const response = await fetch(url);  
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);  
+  
+        const data = await response.json();  
+  
+        if (data.status === "SUCCESS") {  
+          resultDiv.textContent = `✅ Scan successful for Child ID: ${data.childId}`;  
+        } else if (data.status === "INVALID_ID") {  
+          resultDiv.textContent = `❌ Invalid Child ID: ${data.childId}`;  
+        } else if (data.status === "NO_CHILD_ID") {  
+          resultDiv.textContent = "⚠️ No Child ID provided.";  
+        } else {  
+          resultDiv.textContent = `⚠️ ${data.status}: ${data.message || ""}`;  
+        }  
+      } catch (error) {  
+        resultDiv.textContent = "❌ Network error. Please try again.";  
+        console.error("Fetch error:", error);  
+      }  
+    }  
+  </script>  
+  
+</body>  
 </html>
